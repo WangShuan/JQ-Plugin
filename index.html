@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JQuery 插件</title>
+    <script src="./jquery-1.12.4.js"></script>
+    <style>
+        h3 {
+            color: red;
+        }
+
+        p {
+            width: 440px;
+            height: auto;
+            background-color: rgb(240, 230, 255);
+            line-height: 20px;
+            padding: 10px 20px;
+            border: 1px solid mediumpurple;
+        }
+
+        u {
+            background-color: rgb(236, 230, 252);
+            color: midnightblue;
+        }
+
+        #color {
+            width: 200px;
+            height: 50px;
+            background-color: #baf;
+            color: #000;
+        }
+
+        #box {
+            width: 200px;
+            height: 50px;
+            background-color: #baf;
+            color: #000;
+        }
+
+        ul {
+            list-style: none;
+            width: 510px;
+            height: 200px;
+            padding: 0;
+            margin: 0;
+        }
+
+        #test {
+            width: 500px;
+            height: 200px;
+            overflow: hidden;
+            border: 3px solid #ddd;
+        }
+
+        #test li {
+            width: 100px;
+            height: 200px;
+            float: left;
+        }
+
+        #test img {
+            width: 500px;
+            height: 200px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h3>顏色漸變的插件-jquery.color.js</h3>
+
+    使用插件的步驟: 引入JQ > 引入插件 > 使用插件 <br><br>
+
+    <u>
+        //插件本身是基於JQuery的，所以要先引JQ再引插件。
+    </u>
+
+    <br><br>
+
+    <div id="color">點我漸變背景色</div>
+
+    <script src="./jquery.color.js"></script>
+    <script>
+        $(function () {
+            $('#color').on('click', function () {
+                //color插件只接受 #編號 或 rgba 顏色
+                $(this).animate({
+                    backgroundColor: '#000',
+                    color: '#fff'
+                }, 1000)
+            })
+        })
+    </script>
+
+    <h3>在教大家製作jquery插件前 這裏預先說明所謂的'原型'</h3>
+
+    假設有一個數組叫arr1 且我們給arr1添加了某個方法 <br>
+    這個方法是沒辦法被其他數組使用的 <br>
+    若我們是想給所有數組都添加這個方法<br>
+    就該把這個方法添加在數組的原型上
+
+    <p>
+        所謂原型指的是prototype 每個對象都有所謂的prototype <br>
+        prototype裡面存的是此對象的所有可用方法 <br>
+        假設我們要給數組對象添加新的方法 方法名為sayHi <br>
+        可以這樣寫 > Array.prototype.sayHi = function(){}
+    </p>
+
+    <h3>製作一個jquery插件的原理</h3>
+
+    給jquery原型添加一個改變背景色的bgc方法 <br>
+    並把它存放到新增的js檔案 就變成一個jquery插件了<br><br>
+
+    <u>
+        //這裏要注意 為了不破壞jquery本來的鏈式編程 <br>
+        //我們在最後必須和jquery其他方法一樣return this
+    </u>
+
+    <p>
+        所謂的插件 其實就是給jquery增加一些新的方法<br>
+        且是在jquery的原型添加方法 而非給某JQ對象添加方法<br>
+        而prototype在JQ中已被縮寫為fn 假設我們要添加sayHi方法 <br>
+        在JQ中就可以寫 > $.fn.sayHi = function(){}
+    </p>
+
+    <div id="box">點我改背景色</div>
+
+    <script>
+        $(function () {
+
+            //給jquery原型增加一個bgc方法 改變背景色
+            $.fn.bgc = function (color) {
+                this.css('backgroundColor', color)
+
+                return this
+            }
+
+            $('#box').on('click', function () {
+                //調用bgc方法
+                $(this).bgc('#000').css('color', '#fff')
+            })
+        })
+    </script>
+
+    <h3>做一個手風琴插件-myjquery.accordion.js</h3>
+
+    <u>
+        //在myjquery.accordion.js檔案中有逐行說明。
+    </u>
+    <br><br>
+
+    <div id="test">
+        <ul>
+            <li><img src="./img/1.jpg" alt=""></li>
+            <li><img src="./img/2.jpg" alt=""></li>
+            <li><img src="./img/3.jpg" alt=""></li>
+            <li><img src="./img/4.jpg" alt=""></li>
+            <li><img src="./img/5.jpg" alt=""></li>
+        </ul>
+    </div>
+
+    <script src="./myjquery.accordion.js"></script>
+    <script>
+        $(function () {
+            //直接調用accrd方法 不傳參數即有默認效果
+            $('#test').accrd()
+        })
+    </script>
+
+    <h3>懶加載插件-jquery.lazyload.js</h3>
+
+    他也可以叫做圖片懶加載，他是給頁面很長的網頁使用的<br>
+    注意滾動條高度 當頁面滑到底時滾動條會突然延伸 表示加載新圖片了<br><br>
+
+    <u>
+        //在頁面中若是用src屬性會即時加載 <br>
+        //所以在懶加載中我們把src改成data-original屬性 <br>
+        //當頁面滾動到底時瀏覽器就會執行加載圖片的動作
+    </u>
+
+    <br><br>
+
+    <img data-original="./img/image.png" class="lazy">
+
+    <script src="./jquery.lazyload.js"></script>
+    <script>
+        $(function () {
+            $('img.lazy').lazyload()
+        })
+    </script>
+
+</body>
+
+</html>
